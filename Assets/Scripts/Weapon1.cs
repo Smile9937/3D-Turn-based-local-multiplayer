@@ -1,18 +1,17 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public class Weapon : MonoBehaviour
+[Serializable]
+public class Weapon1 : Weapon
 {
     [SerializeField] private Rigidbody _bulletPrefab;
     [SerializeField] private Transform spawnPoint;
     [SerializeField] private float speed;
     private List<GameObject> bullets = new List<GameObject>();
     private bool notEnoughBulletsInPool = true;
-    public void Shoot()
+    public override void Shoot()
     {
-        //var bullet = Instantiate(_bulletPrefab, spawnPoint.position, Quaternion.identity);
-
         GameObject bullet = GetBullet();
 
         bullet.SetActive(true);
@@ -21,11 +20,7 @@ public class Weapon : MonoBehaviour
         bullet.transform.position = spawnPoint.position;
         bullet.transform.rotation = Quaternion.identity;
         bulletRigidbody.velocity = Vector3.zero;
-
-        float angle = Mathf.Abs(90 - transform.eulerAngles.x) * 1 / 90;
-        Vector3 direction = Vector3.up * angle + Vector3.forward;
-
-        bulletRigidbody.AddForce(direction * speed, ForceMode.Impulse);
+        bulletRigidbody.AddForce(transform.up * speed, ForceMode.Impulse);
     }
 
     private GameObject GetBullet()
