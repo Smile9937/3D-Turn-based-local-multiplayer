@@ -13,8 +13,9 @@ public class UnitUI : MonoBehaviour
     {
         _nameBar.text = name;
         _healthBar.maxValue = health;
+        _healthBar.value = health;
     }
-    public void UpdateHealth(int currentHealth, int maxHealth)
+    public void UpdateHealth(int currentHealth)
     {
         _healthBar.value = currentHealth;
     }

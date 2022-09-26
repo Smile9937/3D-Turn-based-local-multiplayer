@@ -5,8 +5,8 @@ using UnityEngine;
 public class UnitHealth : MonoBehaviour, IDamageable
 {
     [SerializeField] private int maxHealth;
+    [SerializeField] private UnitUI unitUI;
     private int health;
-    private bool _isActivePlayer;
     private Unit unit;
     private void Awake()
     {
@@ -16,16 +16,13 @@ public class UnitHealth : MonoBehaviour, IDamageable
     {
         health = maxHealth;
     }
-    public void ChangeActiveState(bool isActive)
-    {
-        _isActivePlayer = isActive;
-    }
     public void TakeDamage(int damage)
     {
         health -= damage;
+        unitUI.UpdateHealth(health);
         if (health <= 0)
         {
-            unit.Dead();
+            unit.Destroy();
         }
     }
 }
