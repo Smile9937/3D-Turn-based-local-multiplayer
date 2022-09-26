@@ -41,7 +41,6 @@ public class GameManager : MonoBehaviour
         RandomStartPlayer();
     }
 
-
     void Update()
     {
         if(Input.GetKeyDown(KeyCode.E))

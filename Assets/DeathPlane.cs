@@ -6,6 +6,11 @@ public class DeathPlane : MonoBehaviour
 {
     private void OnCollisionEnter(Collision collision)
     {
-        Destroy(collision.gameObject);
+        IDestructible destructible = collision.gameObject.GetComponent<IDestructible>();
+
+        if(destructible != null)
+        {
+            destructible.Destroy();
+        }
     }
 }
