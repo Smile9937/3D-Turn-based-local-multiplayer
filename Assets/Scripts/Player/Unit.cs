@@ -8,6 +8,7 @@ using UnityEngine;
 public class Unit : MonoBehaviour, IDestructible
 {
     [SerializeField] private UnitUI _unitUI;
+    [SerializeField] private WeaponSelectUI _weaponSelectUI;
     [SerializeField] protected GameObject _mesh;
     private string _unitName;
     private UnitMovemet _movemet;
@@ -22,6 +23,11 @@ public class Unit : MonoBehaviour, IDestructible
         _movemet = GetComponent<UnitMovemet>();
         _switchCamera = GetComponent<SwitchCamera>();
         _health = GetComponent<UnitHealth>();
+    }
+
+    public void SetMaterial(Material material)
+    {
+        _mesh.GetComponent<SkinnedMeshRenderer>().material = material;
     }
     public void SetName(string name)
     {
@@ -47,6 +53,7 @@ public class Unit : MonoBehaviour, IDestructible
     {
         _movemet.ChangeActiveState(active);
         _switchCamera.ChangeActiveState(active);
+        _weaponSelectUI.ChangeActiveState(active);
 
             if (active)
             {

@@ -43,11 +43,11 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.E))
+        if(Input.GetKeyDown(KeyCode.Z))
         {
             SwapPlayer();
         }
-        if(Input.GetKeyDown(KeyCode.Q))
+        if(Input.GetKeyDown(KeyCode.X))
         {
             EventManager.Instance.StartGame?.Invoke(_numberOfPlayers);
         }

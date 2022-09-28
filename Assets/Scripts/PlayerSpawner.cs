@@ -1,19 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 
 public class PlayerSpawner : MonoBehaviour
 {
     [SerializeField] private PlayerController _playerController;
     [SerializeField] private Unit _unitPrefab;
-    [SerializeField] private Transform[] _playerSpawnLocations;
+    [SerializeField] private List<Transform> _playerSpawnLocations = new List<Transform>();
     private List<Transform> _availableSpawnLocations = new List<Transform>();
     private int _playerID;
     private int _unitID;
 
     [SerializeField] private List<string> names = new List<string>();
     private List<string> availableNames = new List<string>();
+
+    [SerializeField] private Material[] _materials;
 
     private static PlayerSpawner _instance;
     public static PlayerSpawner Instance { get { return _instance; } }
@@ -31,8 +34,8 @@ public class PlayerSpawner : MonoBehaviour
     }
     private void Start()
     {
-        availableNames = names;
-        _availableSpawnLocations = _playerSpawnLocations.ToList();
+        availableNames = new List<string>(names);
+        _availableSpawnLocations = new List<Transform>(_playerSpawnLocations);
     }
     public List<PlayerController> SpawnPlayers(int numberOfPlayers, int unitsPerPlayer)
     {
@@ -41,15 +44,16 @@ public class PlayerSpawner : MonoBehaviour
         for (int i = 0; i < numberOfPlayers; i++)
         {
             _unitID = 0;
+            Material currentMaterial = _materials[_playerID];
             PlayerController currentPlayer = Instantiate(_playerController, transform.position, Quaternion.identity);
-            currentPlayer.SetUnits(SpawnUnits(unitsPerPlayer, currentPlayer));
+            currentPlayer.SetUnits(SpawnUnits(unitsPerPlayer, currentPlayer, currentMaterial));
             currentPlayer.SetStats(_playerID, numberOfPlayers);
             players.Add(currentPlayer);
             _playerID++;
         }
         return players;
     }
-    public List<Unit> SpawnUnits(int numberOfUnits, PlayerController currentPlayer)
+    public List<Unit> SpawnUnits(int numberOfUnits, PlayerController currentPlayer, Material currentMaterial)
     {
         List<Unit> units = new List<Unit>();
         for(int i = 0; i < numberOfUnits; i++)
@@ -61,7 +65,8 @@ public class PlayerSpawner : MonoBehaviour
             Unit currentUnit = Instantiate(_unitPrefab, pos, Quaternion.identity);
             currentUnit.SetID(_playerID, _unitID);
             currentUnit.SetPlayer(currentPlayer);
-            string name = availableNames[Random.Range(0, names.Count)];
+            currentUnit.SetMaterial(currentMaterial);
+            string name = availableNames[Random.Range(0, availableNames.Count)];
             availableNames.Remove(name);
             currentUnit.SetName(name);
             units.Add(currentUnit);

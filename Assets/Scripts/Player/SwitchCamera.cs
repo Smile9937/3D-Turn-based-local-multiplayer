@@ -31,6 +31,7 @@ public class SwitchCamera : MonoBehaviour
                     _cameras[i].depth++;
                 }
             }
+            EventManager.Instance.InvokeActiveCamera(_cameras[_cameraIndex]);
         }
     }
     public void SwitchCameras(InputAction.CallbackContext context)
@@ -49,6 +50,7 @@ public class SwitchCamera : MonoBehaviour
                     _cameras[i].depth++;
                 }
             }
+            EventManager.Instance.InvokeActiveCamera(_cameras[_cameraIndex]);
         }
     }
 }

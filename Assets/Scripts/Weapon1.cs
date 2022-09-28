@@ -2,48 +2,23 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-[Serializable]
+
 public class Weapon1 : Weapon
 {
-    [SerializeField] private Rigidbody _bulletPrefab;
-    [SerializeField] private Transform spawnPoint;
-    [SerializeField] private float speed;
-    private List<GameObject> bullets = new List<GameObject>();
-    private bool notEnoughBulletsInPool = true;
+    [SerializeField] private Transform _spawnPoint;
+    [SerializeField] private float _speed;
+    [SerializeField] private Unit _unit;
+    private ObjectPoolManager _objectPoolManager;
+    private void Start()
+    {
+        _objectPoolManager = ObjectPoolManager.Instance;
+    }
     public override void Shoot()
     {
-        GameObject bullet = GetBullet();
+        GameObject bullet = _objectPoolManager.SpawnFromPool(PoolObject.Bullet, _spawnPoint.position, _unit.transform.rotation);
 
-        bullet.SetActive(true);
         Rigidbody bulletRigidbody = bullet.GetComponent<Rigidbody>();
-
-        bullet.transform.position = spawnPoint.position;
-        bullet.transform.rotation = Quaternion.identity;
         bulletRigidbody.velocity = Vector3.zero;
-        bulletRigidbody.AddForce(transform.up * speed, ForceMode.Impulse);
-    }
-
-    private GameObject GetBullet()
-    {
-        //Checks if there are bullets in the bullets array and returns one if it is active
-        if (bullets.Count > 0)
-        {
-            for (int i = 0; i < bullets.Count; i++)
-            {
-                if (!bullets[i].activeInHierarchy)
-                {
-                    return bullets[i];
-                }
-            }
-        }
-        //Spawns a new bullet if there are not enough in the pool and returns it
-        if (notEnoughBulletsInPool)
-        {
-            GameObject currentBullet = Instantiate(_bulletPrefab.gameObject);
-            currentBullet.SetActive(false);
-            bullets.Add(currentBullet);
-            return currentBullet;
-        }
-        return null;
+        bulletRigidbody.AddForce(transform.up * _speed, ForceMode.Impulse);
     }
 }

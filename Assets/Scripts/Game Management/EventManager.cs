@@ -63,4 +63,13 @@ public class EventManager : MonoBehaviour
         turnEnd?.Invoke();
     }
     #endregion
+
+    #region Set Active Camera
+    public delegate void ActiveCamera(Camera camera);
+    public event ActiveCamera setActiveCamera;
+    public void InvokeActiveCamera(Camera camera)
+    {
+        setActiveCamera?.Invoke(camera);
+    }
+    #endregion
 }
