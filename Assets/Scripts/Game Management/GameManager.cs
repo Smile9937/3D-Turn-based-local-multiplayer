@@ -1,8 +1,4 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -58,7 +54,7 @@ public class GameManager : MonoBehaviour
     }
     private void RandomStartPlayer()
     {
-        _playerIndex = UnityEngine.Random.Range(0, 1);
+        _playerIndex = Random.Range(0, 1);
         SwapPlayer();
     }
     private void SwapPlayer()

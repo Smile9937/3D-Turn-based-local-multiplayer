@@ -129,7 +129,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 2
-  _hitParticle: 1
+  _hitObject: {fileID: 2504214343621411470, guid: 0b79011366eafab44a14e97a0596840e, type: 3}
 --- !u!1 &5893476450786085524
 GameObject:
   m_ObjectHideFlags: 0

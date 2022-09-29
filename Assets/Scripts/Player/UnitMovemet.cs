@@ -102,14 +102,7 @@ public class UnitMovemet : MonoBehaviour
         if (!CanMove()) return;
         if (context.performed)
         {
-            /*if(!Grounded())
-            {
-                _animationPlayer.PlayAnimation(_jumpAirAttackAnim);
-            }
-            else
-            {
-                _animationPlayer.PlayAnimation(_attackAnim);
-            }*/
+            _animator.SetTrigger("Attack");
             _currentWeapon.Shoot();
         }
     }

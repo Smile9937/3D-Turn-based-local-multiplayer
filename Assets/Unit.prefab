@@ -1821,7 +1821,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 0}
   m_FillRect: {fileID: 5318020491791516483}
   m_HandleRect: {fileID: 0}
@@ -2379,10 +2379,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _meshRenderer: {fileID: 6871745322547269841}
-  _bulletPrefab: {fileID: -5461265078469179026, guid: 8e8b8ac563248ad44baf8661b9efa7e6, type: 3}
   _spawnPoint: {fileID: 5453073445831336207}
   _speed: 5
   _unit: {fileID: 5453073445434008390}
+  _bullet: {fileID: 951991163479054591, guid: 8e8b8ac563248ad44baf8661b9efa7e6, type: 3}
+  _attackDelay: 0.5
+  _attackCooldown: 0
 --- !u!1 &5453073446104235356
 GameObject:
   m_ObjectHideFlags: 0
@@ -2647,7 +2649,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -5291,7 +5293,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 0, b: 0, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:

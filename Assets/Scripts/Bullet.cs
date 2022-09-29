@@ -5,19 +5,14 @@ using UnityEngine;
 public class Bullet : MonoBehaviour, IDestructible
 {
     [SerializeField] private int damage;
-    [SerializeField] private PoolObject _hitParticle;
-    private ObjectPoolManager _poolManager;
-    private void Start()
-    {
-        _poolManager = ObjectPoolManager.Instance;
-    }
+    [SerializeField] private GameObject _hitObject;
     public int Damage()
     {
         return damage;
     }
     private void OnCollisionEnter(Collision collision)
     {
-        _poolManager.SpawnFromPool(_hitParticle, collision.contacts[0].point, transform.rotation);
+        ObjectPoolManager.SpawnFromPool(_hitObject, collision.contacts[0].point, transform.rotation);
         IDamageable damageTarget = collision.gameObject.GetComponent<IDamageable>();
         if(damageTarget != null)
         { 
