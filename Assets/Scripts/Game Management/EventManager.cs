@@ -1,37 +1,22 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.Events;
+using static UIManager;
 
-public class EventManager : MonoBehaviour
+public static class EventManager
 {
-    private static EventManager instance;
-    public static EventManager Instance { get { return instance; } }
-
-    private void Awake()
+    #region Start Game
+    public delegate void StartGame(int numberOfPlayers);
+    public static event StartGame startGame;
+    public static void InvokeStartGame(int numberOfPlayers)
     {
-        if (instance == null)
-        {
-            instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        startGame?.Invoke(numberOfPlayers);
     }
-
-    //int = number of players
-    public UnityEvent<int> StartGame = new UnityEvent<int>();
-
-
-    //Events
+    #endregion
 
     #region Change Active Player
     public delegate void ChangeActivePlayer(int player);
-    public event ChangeActivePlayer changeActivePlayer;
-    public void InvokeChangeActivePlayer(int player)
+    public static event ChangeActivePlayer changeActivePlayer;
+    public static void InvokeChangeActivePlayer(int player)
     {
         changeActivePlayer?.Invoke(player);
     }
@@ -39,8 +24,8 @@ public class EventManager : MonoBehaviour
 
     #region Unit Dead
     public delegate void UnitDead();
-    public event UnitDead unitDead;
-    public void InvokeUnitDead()
+    public static event UnitDead unitDead;
+    public static void InvokeUnitDead()
     {
         unitDead?.Invoke();
     }
@@ -48,8 +33,8 @@ public class EventManager : MonoBehaviour
 
     #region Player Lost
     public delegate void PlayerLost(int playerID);
-    public event PlayerLost playerLost;
-    public void InvokePlayerLost(int playerID)
+    public static event PlayerLost playerLost;
+    public static void InvokePlayerLost(int playerID)
     {
         playerLost?.Invoke(playerID);
     }
@@ -57,8 +42,8 @@ public class EventManager : MonoBehaviour
 
     #region Turn End
     public delegate void TurnEnd();
-    public event TurnEnd turnEnd;
-    public void InvokeTurnEnd()
+    public static event TurnEnd turnEnd;
+    public static void InvokeTurnEnd()
     {
         turnEnd?.Invoke();
     }
@@ -66,10 +51,47 @@ public class EventManager : MonoBehaviour
 
     #region Set Active Camera
     public delegate void ActiveCamera(Camera camera);
-    public event ActiveCamera setActiveCamera;
-    public void InvokeActiveCamera(Camera camera)
+    public static event ActiveCamera setActiveCamera;
+    public static void InvokeActiveCamera(Camera camera)
     {
         setActiveCamera?.Invoke(camera);
     }
     #endregion
+
+    #region Set Players
+    public delegate void SetPlayers(int numberOfPlayers, int numberOfUnits);
+    public static event SetPlayers setPlayers;
+    public static void InvokeSetPlayers(int numberOfPlayers, int numberOfUnits)
+    {
+        setPlayers?.Invoke(numberOfPlayers, numberOfUnits);
+    }
+    #endregion
+
+    #region Enter Game
+    public delegate void EnterGame(int level, List<PlayerStats>playerStats);
+    public static event EnterGame enterGame;
+    public static void InvokeEnterGame(int level, List<PlayerStats> playerStats)
+    {
+        enterGame?.Invoke(level, playerStats);
+    }
+    #endregion
+
+    #region PlayerTurnOver
+    public delegate void PlayerTurnOver();
+    public static event PlayerTurnOver playerTurnOver;
+    public static void InvokePlayerTurnOver()
+    {
+        playerTurnOver?.Invoke();
+    }
+    #endregion
+
+    #region PausePlayers
+    public delegate void PausePlayers();
+    public static event PausePlayers pausePlayers;
+    public static void InvokePausePlayers()
+    {
+        pausePlayers?.Invoke();
+    }
+    #endregion
+
 }

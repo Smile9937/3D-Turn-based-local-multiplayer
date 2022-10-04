@@ -15,11 +15,11 @@ public class PlayerController : MonoBehaviour
     }
     private void OnEnable()
     {
-        EventManager.Instance.changeActivePlayer += ChangeActivePlayer;
+        EventManager.changeActivePlayer += ChangeActivePlayer;
     }
     private void OnDisable()
     {
-        EventManager.Instance.changeActivePlayer -= ChangeActivePlayer;
+        EventManager.changeActivePlayer -= ChangeActivePlayer;
     }
     public int GetPlayerID()
     {
@@ -30,10 +30,10 @@ public class PlayerController : MonoBehaviour
         _unitsList.Remove(unit);
         if(_unitsList.Count == 0)
         {
-            EventManager.Instance.InvokePlayerLost(_id);
+            EventManager.InvokePlayerLost(_id);
         } else
         {
-            EventManager.Instance.InvokeUnitDead();
+            EventManager.InvokeUnitDead();
         }
     }
     private void ChangeActivePlayer(int player)

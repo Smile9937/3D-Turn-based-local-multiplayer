@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [RequireComponent(typeof(UnitMovemet)), RequireComponent(typeof(UnitHealth))]
@@ -9,20 +10,16 @@ public class Unit : MonoBehaviour, IDestructible
 {
     [SerializeField] private UnitUI _unitUI;
     [SerializeField] private WeaponSelectUI _weaponSelectUI;
-    [SerializeField] protected GameObject _mesh;
+    [SerializeField] private GameObject _mesh;
     private string _unitName;
     private UnitMovemet _movemet;
     private SwitchCamera _switchCamera;
-    private UnitHealth _health;
-    private int _playerID;
-    private int _unitID;
     private PlayerController _player;
 
     private void Awake()
     {
         _movemet = GetComponent<UnitMovemet>();
         _switchCamera = GetComponent<SwitchCamera>();
-        _health = GetComponent<UnitHealth>();
     }
 
     public void SetMaterial(Material material)
@@ -39,11 +36,18 @@ public class Unit : MonoBehaviour, IDestructible
     }
     private void OnEnable()
     {
-        EventManager.Instance.turnEnd += TurnEnd;
+        EventManager.turnEnd += TurnEnd;
+        EventManager.pausePlayers += WaitForEndOfTurn;
     }
     private void OnDisable()
     {
-        EventManager.Instance.turnEnd -= TurnEnd;
+        EventManager.turnEnd -= TurnEnd;
+        EventManager.pausePlayers -= WaitForEndOfTurn;
+    }
+    private void WaitForEndOfTurn()
+    {
+        _movemet.ChangeActiveState(false);
+        _weaponSelectUI.ChangeActiveState(false);
     }
     private void TurnEnd()
     {
@@ -55,25 +59,24 @@ public class Unit : MonoBehaviour, IDestructible
         _switchCamera.ChangeActiveState(active);
         _weaponSelectUI.ChangeActiveState(active);
 
-            if (active)
-            {
-                _mesh.gameObject.layer = 8;
-            }
-            else
-            {
-                _mesh.gameObject.layer = 7;
-            }
-    }
-    public void SetID(int player, int unit)
-    {
-        _playerID = player;
-        _unitID = unit;
+        if (active)
+        {
+            _mesh.gameObject.layer = 8;
+        }
+        else
+        {
+            _mesh.gameObject.layer = 7;
+        }
     }
     public void SetPlayer(PlayerController player)
     {
         _player = player;
     }
 
+    public void DoneWithTurn()
+    {
+        EventManager.InvokePlayerTurnOver();
+    }
     public void Destroy()
     {
         _player.UnitDead(this);

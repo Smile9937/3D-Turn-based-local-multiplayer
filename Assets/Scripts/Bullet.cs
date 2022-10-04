@@ -13,6 +13,7 @@ public class Bullet : MonoBehaviour, IDestructible
     private void OnCollisionEnter(Collision collision)
     {
         ObjectPoolManager.SpawnFromPool(_hitObject, collision.contacts[0].point, transform.rotation);
+        
         IDamageable damageTarget = collision.gameObject.GetComponent<IDamageable>();
         if(damageTarget != null)
         { 

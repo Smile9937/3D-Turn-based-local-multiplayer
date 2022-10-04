@@ -4,25 +4,28 @@ using UnityEngine;
 
 public class UnitHealth : MonoBehaviour, IDamageable
 {
-    [SerializeField] private int maxHealth;
-    [SerializeField] private UnitUI unitUI;
-    private int health;
-    private Unit unit;
+    [SerializeField] private int _maxHealth;
+    [SerializeField] private UnitUI _unitUI;
+    [SerializeField] private GameObject _damageText;
+    private int _health;
+    private Unit _unit;
     private void Awake()
     {
-        unit = GetComponent<Unit>();
+        _unit = GetComponent<Unit>();
     }
     private void Start()
     {
-        health = maxHealth;
+        _health = _maxHealth;
     }
     public void TakeDamage(int damage)
     {
-        health -= damage;
-        unitUI.UpdateHealth(health);
-        if (health <= 0)
+        _health -= damage;
+        DamageText _text = ObjectPoolManager.SpawnFromPool(_damageText, transform.position, transform.rotation).GetComponent<DamageText>();
+        _text.SetText(damage);
+        _unitUI.UpdateHealth(_health);
+        if (_health <= 0)
         {
-            unit.Destroy();
+            _unit.Destroy();
         }
     }
 }

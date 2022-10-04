@@ -7,7 +7,7 @@ using UnityEngine.InputSystem;
 public class SwitchCamera : MonoBehaviour
 {
     [SerializeField] private Camera[] _cameras;
-    [SerializeField]private int _cameraIndex;
+    [SerializeField] private int _cameraIndex;
 
     private bool _isActive;
     public void ChangeActiveState(bool active)
@@ -31,7 +31,7 @@ public class SwitchCamera : MonoBehaviour
                     _cameras[i].depth++;
                 }
             }
-            EventManager.Instance.InvokeActiveCamera(_cameras[_cameraIndex]);
+            CameraManager.SetActiveCamera(_cameras[_cameraIndex]);
         }
     }
     public void SwitchCameras(InputAction.CallbackContext context)
@@ -50,7 +50,7 @@ public class SwitchCamera : MonoBehaviour
                     _cameras[i].depth++;
                 }
             }
-            EventManager.Instance.InvokeActiveCamera(_cameras[_cameraIndex]);
+            CameraManager.SetActiveCamera(_cameras[_cameraIndex]);
         }
     }
 }

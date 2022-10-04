@@ -19,9 +19,13 @@ public class UIManager : MonoBehaviour
         public Color healthBarColor;
     }
     public PlayerStats[] players;
-    private void Start()
+    private void OnEnable()
     {
-        EventManager.Instance.StartGame.AddListener(StartUI);
+        EventManager.startGame += StartUI;
+    }
+    private void OnDisable()
+    {
+        EventManager.startGame -= StartUI;
     }
     public void StartUI(int numberOfPlayers)
     {
