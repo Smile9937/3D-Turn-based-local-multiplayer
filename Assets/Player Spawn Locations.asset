@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c8f790119f156b42929b2950810a795, type: 3}
+  m_Name: Player Spawn Locations
+  m_EditorClassIdentifier: 
+  _levelSpawnLocations:
+  - {fileID: 2982604805099136179, guid: 819747b3fdaeb7442a3d235b6522975b, type: 3}

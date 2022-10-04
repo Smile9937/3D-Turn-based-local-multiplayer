@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0b9c2fb9a591f947873068ed66a9726, type: 3}
+  m_Name: Player Color List
+  m_EditorClassIdentifier: 
+  _colors:
+  - _teamColor: 0
+    _material: {fileID: 2100000, guid: aa2697fc5c62ddc469c79075db26cab4, type: 2}
+  - _teamColor: 1
+    _material: {fileID: 2100000, guid: 9078837448eb1704a9fb4a5e2c6a1375, type: 2}
+  - _teamColor: 2
+    _material: {fileID: 2100000, guid: 41efd8e5c731ee94c864f9c2e578d8cb, type: 2}
+  - _teamColor: 3
+    _material: {fileID: 2100000, guid: 295bad217b2b36a438d984750ae1d396, type: 2}
+  - _teamColor: 4
+    _material: {fileID: 2100000, guid: bc69fc6ad5b6c7645aa0c00ecda79767, type: 2}
+  - _teamColor: 5
+    _material: {fileID: 2100000, guid: 0c6640c736d6d684c91d085bd616fa94, type: 2}
