@@ -9,7 +9,6 @@ using UnityEngine.UI;
 public class MenuManager : MonoBehaviour
 {
     [SerializeField] private Canvas _pauseMenuCanvas;
-    [SerializeField] private Canvas _settingsCanvas;
     [SerializeField] private Canvas _controlsCanvas;
     [SerializeField] private Canvas _weaponSelectCanvas;
     [SerializeField] private List<Button> _weaponButtons;
@@ -133,10 +132,20 @@ public class MenuManager : MonoBehaviour
             }
         }
     }
-
     public void ChooseWeapon(int weapon)
     {
         EventManager.InvokeEquipWeapon(weapon);
         DisableWeaponSelect();
+    }
+
+    public void Back()
+    {
+        _menuOpen = MenuOpen.None;
+        DisablePauseMenu();
+    }
+
+    public void MainMeu()
+    {
+        GameSceneManager.GoToScene(Scene.MainMenu);
     }
 }
