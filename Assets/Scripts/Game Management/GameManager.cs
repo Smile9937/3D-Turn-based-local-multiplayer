@@ -1,11 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using static EventManager;
-using static UIManager;
 
 public class GameManager : MonoBehaviour
 {
@@ -18,7 +18,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private PlayerColors _playerColors;
     [SerializeField] private float _timeUntilGameStart;
     [SerializeField] private float _timeUntilTurnEnd;
-
+    private int _startPlayerCount;
+    private int _startUnitCount;
     private List<Material> _playerMaterials = new List<Material>();
     private List<string> _availableNames = new List<string>();
     private List<PlayerStats> _playerStats = new List<PlayerStats>();
@@ -27,10 +28,16 @@ public class GameManager : MonoBehaviour
 
     private int _playerIndex;
     private int _currentLevel = 1;
+    private Unit _activeUnit;
+    private Camera _mainCamera;
     private List<PlayerController> _players = new List<PlayerController>();
-    List<Transform> _locations = new List<Transform>();
+    private List<Transform> _locations = new List<Transform>();
+
+    private bool _gameActive;
 
     private static GameManager instance;
+    private bool _turnEnding;
+
     public static GameManager Instance { get { return instance; } }
 
     private void Awake()
@@ -45,12 +52,20 @@ public class GameManager : MonoBehaviour
             playerLost += PlayerLost;
             setPlayers += SetPlayers;
             enterGame += StartLevel;
-            playerTurnOver += WaitForEndOfTurn;
+            playerTurnOver += PlayerTurnOver;
         }
         else
         {
             Destroy(gameObject);
         }
+    }
+    public void SetActiveUnit(Unit unit)
+    {
+        _activeUnit = unit;
+    }
+    public Unit GetActiveUnit()
+    {
+        return _activeUnit;
     }
     private void SetPlayers(int players, int units)
     {
@@ -77,21 +92,6 @@ public class GameManager : MonoBehaviour
                 _playerMaterials.Add(_playerColors.GetMaterialArray()[i]);
             }
             StartGame();
-        }
-    } 
-    void Update()
-    {
-        if(Input.GetKeyDown(KeyCode.Z))
-        {
-            SwapPlayer();
-        }
-        if(Input.GetKeyDown(KeyCode.X))
-        {
-            InvokeStartGame(_numberOfPlayers);
-        }
-        if(Input.GetKeyDown(KeyCode.C))
-        {
-            SceneManager.LoadScene(1);
         }
     }
     public void StartLevel(int level, List<PlayerStats> playerStats)
@@ -128,8 +128,15 @@ public class GameManager : MonoBehaviour
     }
     private void StartGame()
     {
+        _startPlayerCount = _numberOfPlayers;
+        _startUnitCount = _unitsPerPlayer;
+        _gameActive = true;
+        InvokeDeactivatePlayerCameras();
         _locations = _spawnLocations.GetLocations(_currentLevel);
-        _players = PlayerSpawner.SpawnPlayers(_numberOfPlayers, _unitsPerPlayer, _locations, _playerControllerPrefab, _unitPrefab, _playerMaterials, _playerNames);
+        _players = new List<PlayerController> (PlayerSpawner.SpawnPlayers(_numberOfPlayers, _unitsPerPlayer, _locations, _playerControllerPrefab, _unitPrefab, _playerMaterials, _playerNames));
+        CameraManager.SetCameras();
+        _mainCamera = Camera.main;
+        CameraManager.SetActiveCamera(_mainCamera);
         StartCoroutine(StartDelay());
     }
     private IEnumerator StartDelay()
@@ -143,41 +150,73 @@ public class GameManager : MonoBehaviour
         _playerIndex = Random.Range(0, _numberOfPlayers - 1);
         SwapPlayer();
     }
-    private void WaitForEndOfTurn()
+    private void PlayerTurnOver()
     {
-        //InvokePausePlayers();
         StartCoroutine(EndTurnTimer());
     }
     private IEnumerator EndTurnTimer()
+    {        
+        _turnEnding = true;
+        yield return new WaitForSeconds(_timeUntilTurnEnd);
+        _turnEnding = false;
+        SwapPlayer();
+    }
+    private IEnumerator UnitDeadTimer()
     {
+        if(_turnEnding) yield break;
         yield return new WaitForSeconds(_timeUntilTurnEnd);
         SwapPlayer();
     }
     private void SwapPlayer()
     {
+        if (!_gameActive) return;
+
         _playerIndex %= _numberOfPlayers;
         InvokeTurnEnd();
-        InvokeChangeActivePlayer(_players[_playerIndex].GetPlayerID());
+        if (_players[_playerIndex].HasUits())
+        {
+            InvokeChangeActivePlayer(_players[_playerIndex].GetPlayerID());
+        }
+        else
+        {
+            _playerIndex++;
+            SwapPlayer();
+            return;
+        }
+        OverlayManager.Instance.ToggleMoveText(true);
+        OverlayManager.Instance.TogglePlayerTurnText(true);
         _playerIndex++;
     }
-    private void UnitDead()
+    private void UnitDead(bool active)
     {
-        SwapPlayer();
+        if (!active) return;
+        CameraManager.SetActiveCamera(_mainCamera);
+        OverlayManager.Instance.ToggleMoveText(false);
+        OverlayManager.Instance.TogglePlayerTurnText(false);
+        StartCoroutine(UnitDeadTimer());
     }
     private void PlayerLost(int playerID)
     {
         _numberOfPlayers--;
-        if (_numberOfPlayers <= 1)
+        Destroy(_players[playerID].gameObject);
+        _players.RemoveAt(playerID);
+        if(_numberOfPlayers > 1)
         {
-            Debug.Log("Game ended!");
+            SwapPlayer();
         }
         else
         {
-            Destroy(_players[playerID].gameObject);
-            _players.RemoveAt(playerID);
-            Debug.Log("Player " + playerID + " lost");
-            SwapPlayer();
+            _numberOfPlayers = _startPlayerCount;
+            _unitsPerPlayer = _startUnitCount;
+            GameSceneManager.GoToScene(Scene.EndScreen);
+            StartCoroutine(WaitForEndScreen());
+            _gameActive = false;
         }
+    }
+    private IEnumerator WaitForEndScreen()
+    {
+        yield return null;
+        EndScreenManager.Instance.SetWinnerText(_players[0].GetName());
     }
     public int GetNumberOfPlayers()
     {

@@ -10,6 +10,14 @@ public class SwitchCamera : MonoBehaviour
     [SerializeField] private int _cameraIndex;
 
     private bool _isActive;
+    private void OnEnable()
+    {
+        EventManager.deactivatePlayerCameras += DeactivateCameras;   
+    }
+    private void OnDisable()
+    {
+        EventManager.deactivatePlayerCameras -= DeactivateCameras;
+    }
     public void ChangeActiveState(bool active)
     {
         _isActive = active;
@@ -51,6 +59,14 @@ public class SwitchCamera : MonoBehaviour
                 }
             }
             CameraManager.SetActiveCamera(_cameras[_cameraIndex]);
+        }
+    }
+
+    private void DeactivateCameras()
+    {
+        for (int i = 0; i < _cameras.Length; i++)
+        {
+            _cameras[i].depth = 0;
         }
     }
 }

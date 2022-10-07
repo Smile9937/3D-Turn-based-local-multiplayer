@@ -9,9 +9,11 @@ public class UnitHealth : MonoBehaviour, IDamageable
     [SerializeField] private GameObject _damageText;
     private int _health;
     private Unit _unit;
+    private Rigidbody _rigidbody;
     private void Awake()
     {
         _unit = GetComponent<Unit>();
+        _rigidbody = GetComponent<Rigidbody>();
     }
     private void Start()
     {
@@ -27,5 +29,15 @@ public class UnitHealth : MonoBehaviour, IDamageable
         {
             _unit.Destroy();
         }
+    }
+
+    public int GetMaxHealth()
+    {
+        return _maxHealth;
+    }
+
+    public void TakeKnockback(Vector3 knockback)
+    {
+        _rigidbody.AddForce(knockback, ForceMode.Impulse);
     }
 }

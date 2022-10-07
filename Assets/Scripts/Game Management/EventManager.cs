@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using static UIManager;
 
 public static class EventManager
 {
@@ -23,11 +22,11 @@ public static class EventManager
     #endregion
 
     #region Unit Dead
-    public delegate void UnitDead();
+    public delegate void UnitDead(bool active);
     public static event UnitDead unitDead;
-    public static void InvokeUnitDead()
+    public static void InvokeUnitDead(bool active)
     {
-        unitDead?.Invoke();
+        unitDead?.Invoke(active);
     }
     #endregion
 
@@ -93,5 +92,72 @@ public static class EventManager
         pausePlayers?.Invoke();
     }
     #endregion
+    
+    #region DeactivatePlayerCameras
+    public delegate void DeactivatePlayerCameras();
+    public static event DeactivatePlayerCameras deactivatePlayerCameras;
+    public static void InvokeDeactivatePlayerCameras()
+    {
+        deactivatePlayerCameras?.Invoke();
+    }
+    #endregion
 
+    #region GetCameras
+    public delegate void GetCameras();
+    public static event GetCameras getCameras;
+    public static void InvokeGetCameras()
+    {
+        getCameras?.Invoke();
+    }
+    #endregion
+    
+    #region OpenMenu
+    public delegate void OpenMenu(bool open);
+    public static event OpenMenu openMenu;
+    public static void InvokeOpenMenu(bool open)
+    {
+        openMenu?.Invoke(open);
+    }
+    #endregion
+
+    #region OpenWeaponSelect
+    public delegate void OpenWeaponSelect(bool open);
+    public static event OpenWeaponSelect openWeaponSelect;
+    public static void InvokeOpenWeaponSelect(bool open)
+    {
+        openWeaponSelect?.Invoke(open);
+    }
+    #endregion
+    
+    #region GetUnlockedWeapons
+    public delegate void GetUnlockedWeapons(ReturnUnlockedWeapons eventCallback);
+    public static event GetUnlockedWeapons getUnlockedWeapons;
+    public static void InvokeGetUnlockedWeapons()
+    {
+        getUnlockedWeapons?.Invoke(returnUnlockedWeapons);
+    }
+    #endregion
+
+    #region ReturnUnlockedWeapons
+    public delegate void ReturnUnlockedWeapons(List<int> _weapons);
+    public static event ReturnUnlockedWeapons returnUnlockedWeapons;
+    #endregion
+
+    #region EquipWeapon
+    public delegate void EquipWeapon(int weapon);
+    public static event EquipWeapon equipWeapon;
+    public static void InvokeEquipWeapon(int weapon)
+    {
+        equipWeapon?.Invoke(weapon);
+    }
+    #endregion
+
+    #region ActiveCameraChanged
+    public delegate void ActiveCameraChanged(Camera camera);
+    public static event ActiveCameraChanged activeCameraChanged;
+    public static void InvokeActiveCameraChanged(Camera camera)
+    {
+        activeCameraChanged?.Invoke(camera);
+    }
+    #endregion
 }

@@ -9,12 +9,12 @@ public class UnitMovemet : MonoBehaviour
 {
     [Header("Components")]
     [SerializeField] private Animator _animator;
-    [SerializeField] private Weapon _startingWeapon;
+    [SerializeField] private int _startingWeaponIndex;
 
     [Header("Stats")]
     [SerializeField] private float _startMovementSpeed = 10f;
     [SerializeField] private float _jumpHeight = 6f;
-    [SerializeField] private float _startMoveDistance;
+    [SerializeField] private int _startMoveDistance;
 
     [Header("Ground Check")]
     [SerializeField] private Vector3 _groundCheckSize;
@@ -25,20 +25,21 @@ public class UnitMovemet : MonoBehaviour
 
     [Header("Debug Values")]
     [SerializeField] private float _movementSpeed;
-    [SerializeField] private float _moveDistance;
+    [SerializeField] private int _moveDistance;
 
     private Rigidbody _rigidbody;
     private Vector2 _moveValue;
     private Collider _collider;
     private Vector2 _mousePos;
-    private bool _isActiveUnit;
-    private Weapon _currentWeapon;
+    [SerializeField] private Weapon _currentWeapon;
+    private int _currentWeaponIndex;
     private bool _canMove = true;
     private RaycastHit grounCheckRayHit;
     private bool grounCheckRayHitDetect;
     private Vector3 _moveDir;
     private bool _moving;
     private Unit _unit;
+    private OverlayManager _overlayManager;
 
     //Animations
     private string _randomIdle = "RandomIdle";
@@ -54,20 +55,37 @@ public class UnitMovemet : MonoBehaviour
         _rigidbody = GetComponent<Rigidbody>();
         _collider = GetComponent<Collider>();
         _unit = GetComponent<Unit>();
+        _overlayManager = OverlayManager.Instance;
+    }
+    private void OnEnable()
+    {
+        EventManager.equipWeapon += SwitchWeapon;
+    }
+    private void OnDisable()
+    {
+        EventManager.equipWeapon -= SwitchWeapon;
     }
     private void Start()
     {
-        _currentWeapon = _startingWeapon;
         _movementSpeed = _startMovementSpeed;
         _moveDistance = _startMoveDistance;
-        SwitchWeapon(_startingWeapon);
+
+        _currentWeaponIndex = _startingWeaponIndex;
+        _currentWeapon = _unit.GetWeapons()[_currentWeaponIndex];
+        _currentWeapon.gameObject.SetActive(true);
+
         PickRandomIdle();
     }
-    public void SwitchWeapon(Weapon weapon)
+    public void SwitchWeapon(int weapon)
     {
-        if (_currentWeapon == null || weapon == null) return;
+        if (_unit.GetState() != UnitState.InMenu && _unit.GetState() != UnitState.ActiveTurn) return;
+
+        _currentWeapon = _unit.GetWeapons()[_currentWeaponIndex];
         _currentWeapon.gameObject.SetActive(false);
-        _currentWeapon = weapon;
+
+        _currentWeaponIndex = weapon;
+
+        _currentWeapon = _unit.GetWeapons()[_currentWeaponIndex];
         _currentWeapon.gameObject.SetActive(true);
     }
     private void PickRandomIdle()
@@ -75,28 +93,37 @@ public class UnitMovemet : MonoBehaviour
         _animator.SetFloat(_randomIdle, UnityEngine.Random.Range(0f, 1f));
     }
 
+    public void ResetMovemet()
+    {
+        _moveValue = Vector2.zero;
+        _moving = false;
+    }
     public void ChangeActiveState(bool isActive)
     {
-        _isActiveUnit = isActive;
-        if(_isActiveUnit)
+        if(isActive)
         {
+            _unit.SetState(UnitState.ActiveTurn);
             _moveDistance = _startMoveDistance;
+            _canMove = true;
+            _overlayManager.UpdateMoveDistanceText(_startMoveDistance);
         }
-        ResetMovement();
-    }
-
-    private void ResetMovement()
-    {
-        if (!CanMove())
+        else
         {
-            _moveValue = Vector2.zero;
+            _unit.SetState(UnitState.Idle);
         }
+        ResetMovemet();
     }
-
     public void ToggleMovement(bool canMove)
     {
-        _canMove = canMove;
-        ResetMovement();
+        if(canMove)
+        {
+            _unit.SetState(UnitState.ActiveTurn);
+        }
+        else
+        {
+            _unit.SetState(UnitState.InMenu);
+        }
+        ResetMovemet();
     }
     public void Move(InputAction.CallbackContext context)
     {
@@ -119,11 +146,12 @@ public class UnitMovemet : MonoBehaviour
         while(_moving)
         {
             _moveDistance--;
+            _overlayManager.UpdateMoveDistanceText(_moveDistance);
             if(_moveDistance <= 0)
             {
                 _canMove = false;
                 _moving = false;
-                _moveValue = Vector2.zero;
+                ResetMovemet();
             }
             yield return new WaitForSeconds(0.2f);
         }
@@ -154,13 +182,13 @@ public class UnitMovemet : MonoBehaviour
     }
     public void Shoot(InputAction.CallbackContext context)
     {
-        if (!_isActiveUnit) return;
-        if (context.performed)
+        if (_unit.GetState() != UnitState.ActiveTurn) return;
+        if (context.performed && Grounded())
         {
             _animator.SetTrigger(_attack);
             _currentWeapon.Shoot();
         }
-        if(context.canceled)
+        if(context.canceled && Grounded())
         {
             _unit.DoneWithTurn();
         }
@@ -177,7 +205,7 @@ public class UnitMovemet : MonoBehaviour
     }
     public void Look(InputAction.CallbackContext context)
     {
-        if (!_isActiveUnit) return;
+        if (!CanInteract()) return;
         if (context.performed)
         {
             _mousePos = context.ReadValue<Vector2>();
@@ -189,9 +217,13 @@ public class UnitMovemet : MonoBehaviour
         transform.Rotate(_mousePos.x * _rotateSensitivity * Vector3.up);
     }
 
+    private bool CanInteract()
+    {
+        return _unit.GetState() == UnitState.ActiveTurn || _unit.GetState() == UnitState.WaitingOnTurnEnd;
+    }
     private bool CanMove()
     {
-        return _canMove && _isActiveUnit;
+        return _unit.GetState() == UnitState.ActiveTurn && _canMove || _unit.GetState() == UnitState.WaitingOnTurnEnd && _canMove;
     }
     void OnDrawGizmos()
     {

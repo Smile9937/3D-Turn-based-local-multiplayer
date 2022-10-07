@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour
     private int _unitIndex;
     private int _id;
     private bool _active;
+    private string _playerName;
     public List<Unit> _unitsList = new List<Unit>();
     public void SetUnits(List<Unit> units)
     {
@@ -33,7 +34,7 @@ public class PlayerController : MonoBehaviour
             EventManager.InvokePlayerLost(_id);
         } else
         {
-            EventManager.InvokeUnitDead();
+            EventManager.InvokeUnitDead(unit.GetState() == UnitState.Dead);
         }
     }
     private void ChangeActivePlayer(int player)
@@ -42,8 +43,21 @@ public class PlayerController : MonoBehaviour
         if (player == 0) { _unitIndex++; }
         if (_unitIndex >= _unitsList.Count) { _unitIndex = 0; }
         _unitsList[_unitIndex].SetActive(_active);
+        GameManager.Instance.SetActiveUnit(_unitsList[_unitIndex]);
     }
-    public void SetStats(int id, int numberOfPlayers)
+    public bool HasUits()
+    {
+        return _unitsList.Count > 0;
+    }
+    public void SetName(string name)
+    {
+        _playerName = name;
+    }
+    public string GetName()
+    {
+        return _playerName;
+    }
+    public void SetNumberOfUnits(int id)
     {
         _id = id;
     }

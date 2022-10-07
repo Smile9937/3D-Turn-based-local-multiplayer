@@ -8,6 +8,7 @@ public static class ObjectPoolManager
     public static GameObject SpawnFromPool(GameObject gameObject, Vector3 position, Quaternion rotation)
     {
         if(_poolParent == null) {
+            _poolDictionary.Clear();
             _poolParent = new GameObject(name: "Pool Parent");
         }
         if(!_poolDictionary.ContainsKey(gameObject))

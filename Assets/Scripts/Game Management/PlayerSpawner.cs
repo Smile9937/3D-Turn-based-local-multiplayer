@@ -16,8 +16,9 @@ public static class PlayerSpawner
         {
             PlayerController currentPlayer = Object.Instantiate(player, Vector3.zero, Quaternion.identity);
 
-            currentPlayer.SetStats(i, numberOfPlayers);
+            currentPlayer.SetNumberOfUnits(i);
             currentPlayer.SetUnits(SpawnUnits(unitsPerPlayer, currentPlayer, materials[i], unit, names[i]));
+            currentPlayer.SetName(names[i]);
 
             _players.Add(currentPlayer);
         }

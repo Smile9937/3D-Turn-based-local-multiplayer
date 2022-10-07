@@ -1,10 +1,6 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using TMPro;
 using UnityEngine;
-using static UIManager;
 
 public class MainMenuCanvas : MonoBehaviour
 {
@@ -52,7 +48,7 @@ public class MainMenuCanvas : MonoBehaviour
         _numberOfPlayers = _gameManager.GetNumberOfPlayers();
         _numberOfUnits = _gameManager.GetNumberOfUnits();
 
-        _numberOfPlayersDropdown.value = _numberOfPlayers - 1;
+        _numberOfPlayersDropdown.value = _numberOfPlayers - 2;
         _numberOfUnitsDropdown.value = _numberOfUnits - 1;
     }
     public void StartGame()
@@ -69,11 +65,6 @@ public class MainMenuCanvas : MonoBehaviour
         EventManager.InvokeEnterGame(_levelToEnter, _playerStats);
     }
 
-    public void Options()
-    {
-        Debug.Log("Settings");
-    }
-
     public void QuitGame()
     {
         Application.Quit();
@@ -81,7 +72,7 @@ public class MainMenuCanvas : MonoBehaviour
 
     public void SelectNumberOfPlayers(int numberOfPlayers)
     {
-        _numberOfPlayers = numberOfPlayers + 1;
+        _numberOfPlayers = numberOfPlayers + 2;
     }
     public void SelectNumberOfUnits(int numberOfUnits)
     {
