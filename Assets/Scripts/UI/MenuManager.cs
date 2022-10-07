@@ -144,7 +144,7 @@ public class MenuManager : MonoBehaviour
         DisablePauseMenu();
     }
 
-    public void MainMeu()
+    public void MainMenu()
     {
         GameSceneManager.GoToScene(Scene.MainMenu);
     }
