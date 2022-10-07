@@ -5,6 +5,7 @@ using UnityEngine;
 public abstract class Weapon : MonoBehaviour
 {
     [SerializeField] private MeshRenderer _meshRenderer;
+    [SerializeField] protected int _weaponIndex;
     public abstract void Shoot();
 
     private void OnEnable()

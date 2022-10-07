@@ -1,14 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
-public class Bullet : MonoBehaviour, IDestructible
+public class Fireball : MonoBehaviour, IDestructible
 {
-    [SerializeField] private int damage;
+    [SerializeField] private int _damage = 5;
     [SerializeField] private GameObject _hitObject;
+    [SerializeField] private Vector2 _knockback = new Vector2(3, 2);
     public int Damage()
     {
-        return damage;
+        return _damage;
     }
     private void OnCollisionEnter(Collision collision)
     {
@@ -18,6 +20,7 @@ public class Bullet : MonoBehaviour, IDestructible
         if(damageTarget != null)
         { 
             damageTarget.TakeDamage(Damage());
+            damageTarget.TakeKnockback(transform.forward * _knockback.x + transform.up * _knockback.y);
         }
         Destroy();
     }
