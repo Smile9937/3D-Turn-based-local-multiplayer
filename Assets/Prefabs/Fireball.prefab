@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: -5461265078469179026}
   - component: {fileID: 6085921954527478008}
   m_Layer: 0
-  m_Name: Bullet
+  m_Name: Fireball
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -128,8 +128,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 390d86fc680fa8c44a94cf6389ca43c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 2
+  _damage: 5
   _hitObject: {fileID: 2504214343621411470, guid: 0b79011366eafab44a14e97a0596840e, type: 3}
+  _knockback: {x: 4, y: 3}
 --- !u!1 &5893476450786085524
 GameObject:
   m_ObjectHideFlags: 0
